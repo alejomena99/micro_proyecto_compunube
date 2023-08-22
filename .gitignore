@@ -1,0 +1,5 @@
+# Ignorar la carpeta .vagrant
+.vagrant/
+
+# Ignorar todos los archivos con extensión .box
+*.box
