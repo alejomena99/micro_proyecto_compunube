@@ -20,9 +20,8 @@ class baseconfig {
   }
 
   exec { 'run_consul_agent':
-    command     => "/usr/bin/sudo consul agent -ui -dev -bind=${environment.PRIVATE_IP} -client=0.0.0.0 -data-dir=.",
-    refreshonly => true, 
-    async       => true,
+    command     => "/usr/bin/sudo consul agent -ui -dev -bind=${private_ip} -client=0.0.0.0 -data-dir=. > /dev/null 2>&1",
+    timeout     => 10,
     require     => Package['consul'],
   }
 
@@ -62,14 +61,12 @@ class baseconfig {
   exec { 'npm_install_consul':
     command     => '/usr/bin/npm install consul',
     cwd         => '/home/vagrant/consulService/app',
-    refreshonly => true, 
     require     => [Package['nodejs'], Package['npm']],
   }
 
   exec { 'npm_install_express':
     command     => '/usr/bin/npm install express',
     cwd         => '/home/vagrant/consulService/app',
-    refreshonly => true, 
     require     => [Package['nodejs'], Package['npm']],
   }
 

@@ -1,10 +1,10 @@
 const Consul = require('consul');
 const express = require('express');
 
-const SERVICE_NAME= process.env.SERVICE_NAME || 'MICROSERVICE_NAME';
+const SERVICE_NAME= process.env.SERVICE_NAME || 'microservice_name';
 const SERVICE_ID='m'+process.argv[2];
 const SCHEME='http';
-const HOST=process.env.HOST || 'PRIVATE_IP';
+const HOST=process.env.HOST || 'private_ip';
 const PORT=process.argv[2]*1;
 const PID = process.pid;
 
