@@ -58,12 +58,6 @@ class baseconfig {
     source  => 'puppet:///modules/baseconfig/index.js',
   }
 
-  exec { 'chmod_x_index_js':
-    command     => 'chmod +x /home/vagrant/consulService/app/index.js',
-    path        => ['/bin', '/usr/bin'],
-    subscribe   => File['/home/vagrant/consulService/app/index.js'],
-  }
-
   exec { 'npm_install_consul':
     command     => '/usr/bin/npm install consul',
     cwd         => '/home/vagrant/consulService/app',
