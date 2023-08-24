@@ -54,8 +54,14 @@ class baseconfig {
     ensure  => 'file',
     owner   => 'root',
     group   => 'root',
-    mode    => '0644',
+    mode    => '0755',
     source  => 'puppet:///modules/baseconfig/index.js',
+  }
+
+  exec { 'chmod_x_index_js':
+    command     => 'chmod +x /home/vagrant/consulService/app/index.js',
+    path        => ['/bin', '/usr/bin'],
+    subscribe   => File['/home/vagrant/consulService/app/index.js'],
   }
 
   exec { 'npm_install_consul':
@@ -68,6 +74,22 @@ class baseconfig {
     command     => '/usr/bin/npm install express',
     cwd         => '/home/vagrant/consulService/app',
     require     => [Package['nodejs'], Package['npm']],
+  }
+
+  exec { 'start_node_app3003':
+    command     => '/usr/bin/node index.js 3003 &',
+    user        => 'vagrant',
+    cwd         => '/home/vagrant/consulService/app',
+    environment => [ "private_ip=${private_ip}", "microservice_name=${microservice_name}" ],
+    require     => [Exec['npm_install_consul'], Exec['npm_install_express']],
+  }
+
+  exec { 'start_node_app3004':
+    command     => '/usr/bin/node index.js 3004 &',
+    user        => 'vagrant',
+    cwd         => '/home/vagrant/consulService/app',
+    environment => [ "private_ip=${private_ip}", "microservice_name=${microservice_name}" ],
+    require     => [Exec['npm_install_consul'], Exec['npm_install_express']],
   }
 
 }
