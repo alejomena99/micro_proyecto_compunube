@@ -23,17 +23,21 @@ Vagrant.configure("2") do |config|
 
       webProject1.vm.provision "shell", inline: <<-SHELL
         echo 'export private_ip=193.168.100.3' >> /home/vagrant/.bashrc
-        echo 'export microservice_name=my_microservice_1' >> /home/vagrant/.bashrc
+        echo 'export microservice_name=my_microservice' >> /home/vagrant/.bashrc
+        echo 'export consul_ip=193.168.100.5' >> /home/vagrant/.bashrc
+        echo 'export service_id=web1' >> /home/vagrant/.bashrc
       SHELL
   
       webProject1.vm.provision "shell", inline: $install_puppet
       webProject1.vm.provision :puppet do |puppet|
         puppet.manifests_path = "puppet/manifests"
-        puppet.manifest_file = "site.pp"
+        puppet.manifest_file = "web.pp"
         puppet.module_path = "puppet/modules"
         puppet.facter = {
           "private_ip" => "193.168.100.3",
-          "microservice_name" => "my_microservice_1"
+          "microservice_name" => "my_microservice",
+          "consul_ip" => "193.168.100.5",
+          "service_id" => "web1"
         }
       end
     end
@@ -47,17 +51,43 @@ Vagrant.configure("2") do |config|
 
       webProject2.vm.provision "shell", inline: <<-SHELL
         echo 'export private_ip=193.168.100.4' >> /home/vagrant/.bashrc
-        echo 'export microservice_name=my_microservice_2' >> /home/vagrant/.bashrc
+        echo 'export microservice_name=my_microservice' >> /home/vagrant/.bashrc
+        echo 'export consul_ip=193.168.100.5' >> /home/vagrant/.bashrc
+        echo 'export service_id=web2' >> /home/vagrant/.bashrc
       SHELL
 
       webProject2.vm.provision "shell", inline: $install_puppet
       webProject2.vm.provision :puppet do |puppet|
         puppet.manifests_path = "puppet/manifests"
-        puppet.manifest_file = "site.pp"
+        puppet.manifest_file = "web.pp"
         puppet.module_path = "puppet/modules"
         puppet.facter = {
           "private_ip" => "193.168.100.4",
-          "microservice_name" => "my_microservice_2"
+          "microservice_name" => "my_microservice",
+          "consul_ip" => "193.168.100.5",
+          "service_id" => "web2"
+        }
+      end
+    end
+
+    config.vm.define :clientProject do |clientProject|
+      clientProject.vm.box = "bento/ubuntu-22.04"
+      clientProject.vm.network :private_network, ip: "193.168.100.5"
+      clientProject.vm.hostname = "clientProject"
+      clientProject.vm.boot_timeout = 800
+      clientProject.vm.synced_folder "D:/Vagrant/synchronized_folder_web2", "/home/vagrant/synchronized_folder_web2"
+
+      clientProject.vm.provision "shell", inline: <<-SHELL
+        echo 'export private_ip=193.168.100.5' >> /home/vagrant/.bashrc
+      SHELL
+
+      clientProject.vm.provision "shell", inline: $install_puppet
+      clientProject.vm.provision :puppet do |puppet|
+        puppet.manifests_path = "puppet/manifests"
+        puppet.manifest_file = "client.pp"
+        puppet.module_path = "puppet/modules"
+        puppet.facter = {
+          "private_ip" => "193.168.100.5",
         }
       end
     end
