@@ -53,19 +53,25 @@ class webconfig {
     require     => [Package['nodejs'], Package['npm']],
   }
 
-  exec { 'start_node_app3003':
-    command     => '/usr/bin/node index.js 3003 &',
+  exec { 'start_node_app3001':
+    command     => "/usr/bin/node index.js ${service_node1} &",
     user        => 'vagrant',
     cwd         => '/home/vagrant/consulService/app',
-    environment => [ "private_ip=${private_ip}", "microservice_name=${microservice_name}", "consul_ip=${consul_ip}", "service_id=${service_id}"],
+    environment => ["private_ip=${private_ip}", 
+                    "microservice_name=${microservice_name}",  
+                    "consul_ip=${consul_ip}", 
+                    "service_id=${service_id}"],
     require     => [Exec['npm_install_consul'], Exec['npm_install_express']],
   }
 
-  exec { 'start_node_app3004':
-    command     => '/usr/bin/node index.js 3004 &',
+  exec { 'start_node_app3002':
+    command     => "/usr/bin/node index.js ${service_node2} &",
     user        => 'vagrant',
     cwd         => '/home/vagrant/consulService/app',
-    environment => [ "private_ip=${private_ip}", "microservice_name=${microservice_name}", "consul_ip=${consul_ip}", "service_id=${service_id}"],
+    environment => ["private_ip=${private_ip}", 
+                    "microservice_name=${microservice_name}",  
+                    "consul_ip=${consul_ip}", 
+                    "service_id=${service_id}"],
     require     => [Exec['npm_install_consul'], Exec['npm_install_express']],
   }
 

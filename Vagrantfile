@@ -47,6 +47,8 @@ Vagrant.configure("2") do |config|
         echo 'export microservice_name=my_microservice' >> /home/vagrant/.bashrc
         echo 'export consul_ip=193.168.100.5' >> /home/vagrant/.bashrc
         echo 'export service_id=web1' >> /home/vagrant/.bashrc
+        echo 'export service_node1=3001' >> /home/vagrant/.bashrc
+        echo 'export service_node2=3002' >> /home/vagrant/.bashrc
       SHELL
   
       webProject1.vm.provision "shell", inline: $install_puppet
@@ -58,7 +60,9 @@ Vagrant.configure("2") do |config|
           "private_ip" => "193.168.100.3",
           "microservice_name" => "my_microservice",
           "consul_ip" => "193.168.100.5",
-          "service_id" => "web1"
+          "service_id" => "web1",
+          "service_node1" => "3001",
+          "service_node2" => "3002"
         }
       end
     end
@@ -75,6 +79,8 @@ Vagrant.configure("2") do |config|
         echo 'export microservice_name=my_microservice' >> /home/vagrant/.bashrc
         echo 'export consul_ip=193.168.100.5' >> /home/vagrant/.bashrc
         echo 'export service_id=web2' >> /home/vagrant/.bashrc
+        echo 'export service_node1=3001' >> /home/vagrant/.bashrc
+        echo 'export service_node2=3002' >> /home/vagrant/.bashrc
       SHELL
 
       webProject2.vm.provision "shell", inline: $install_puppet
@@ -86,7 +92,9 @@ Vagrant.configure("2") do |config|
           "private_ip" => "193.168.100.4",
           "microservice_name" => "my_microservice",
           "consul_ip" => "193.168.100.5",
-          "service_id" => "web2"
+          "service_id" => "web2",
+          "service_node1" => "3001",
+          "service_node2" => "3002"
         }
       end
     end
@@ -97,18 +105,11 @@ Vagrant.configure("2") do |config|
       balancerProject.vm.hostname = "balancerProject"
       balancerProject.vm.boot_timeout = 800
 
-      balancerProject.vm.provision "shell", inline: <<-SHELL
-        echo 'export private_ip=193.168.100.6' >> /home/vagrant/.bashrc
-      SHELL
-
       balancerProject.vm.provision "shell", inline: $install_puppet
       balancerProject.vm.provision :puppet do |puppet|
         puppet.manifests_path = "puppet/manifests"
         puppet.manifest_file = "balancer.pp"
         puppet.module_path = "puppet/modules"
-        puppet.facter = {
-          "private_ip" => "193.168.100.6",
-        }
       end
     end
 
